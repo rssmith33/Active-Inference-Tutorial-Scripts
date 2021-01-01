@@ -29,7 +29,7 @@ o = [1 0]';
 % express generative model in terms of update equations
 lns = nat_log(D) + nat_log(A')*o;
 
-%normalize using a softmax function to find posterior
+% normalize using a softmax function to find posterior
 s = (exp(lns)/sum(exp(lns)))
 
 % Note: Because the natural log of 0 is undefined, for numerical reasons 
@@ -87,12 +87,12 @@ for t = 1:T
         elseif tau == T
             lns = .5*lnD + lnAo;
         end 
-        % normalise using a softmax function to find posterior
+        % normalize using a softmax function to find posterior
         Qs(:,tau) = (exp(lns)/sum(exp(lns)));
     end 
 end
 
-Qs
+Qs % final posterior beliefs over states
 
 %% functions
 
