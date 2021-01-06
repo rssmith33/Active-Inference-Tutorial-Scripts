@@ -12,6 +12,10 @@ Step_by_Step_Hierarchical_Model:
 
 Separate script illustrating how to build a hierarchical (deep temporal) model, using a commonly used oddball task paradigm as an example. This also shows how to simulate predicted neuronal responses (event-related potentials) observed using this task in empirical studies.
 
+EFE_Precision_Updating:
+
+Separate script that allows the reader to simulate updates in the expected free energy precision (gamma) through updates in its prior (beta). At the top of the script you can choose values for the prior over policies, expected free energy over policies, and variational free energy over policies after a new observation, as well as the initial prior on expected precision. The script will then simulate 16 iterative updates and plot the resulting changes in gamma. By changing the initial values of the priors and free energies, you can get more of an intuition about the dynamics of these updates and how they depend on the relationship between the initial values that are chosen.
+
 Pencil_and_paper_exercise_solutions:
 
 Solutions to 'pencil and paper' exercises provided in the tutorial paper. These are provided to aid the reader in developing intuitions for the equations used in active inference.
