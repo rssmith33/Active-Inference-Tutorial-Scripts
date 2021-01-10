@@ -16,6 +16,10 @@ EFE_Precision_Updating:
 
 Separate script that allows the reader to simulate updates in the expected free energy precision (gamma) through updates in its prior (beta). At the top of the script you can choose values for the prior over policies, expected free energy over policies, and variational free energy over policies after a new observation, as well as the initial prior on expected precision. The script will then simulate 16 iterative updates and plot the resulting changes in gamma. By changing the initial values of the priors and free energies, you can get more of an intuition about the dynamics of these updates and how they depend on the relationship between the initial values that are chosen.
 
+VFE_calculation_example:
+
+Separate script that allows the reader to calculate variational free energy for approximate posterior beliefs given a new observation. The reader can specify a generative model (priors and likelihood matrix) and an observation, and then experiment with how variational free energy is reduced as approximate posterior beliefs approach the true posteriors.
+
 Pencil_and_paper_exercise_solutions:
 
 Solutions to 'pencil and paper' exercises provided in the tutorial paper. These are provided to aid the reader in developing intuitions for the equations used in active inference.
