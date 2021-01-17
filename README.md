@@ -20,6 +20,10 @@ VFE_calculation_example:
 
 Separate script that allows the reader to calculate variational free energy for approximate posterior beliefs given a new observation. The reader can specify a generative model (priors and likelihood matrix) and an observation, and then experiment with how variational free energy is reduced as approximate posterior beliefs approach the true posteriors.
 
+Prediction_error_example:
+
+Separate script that allows the reader to calculate state and outcome prediction errors. These minimize variational and expected free energy, respectively. Minimizing state prediction errors maintains accurate beliefs (while also changing beliefs as little as possible). Minimizing outcome prediction errors maximizes reward and information gain.
+
 Pencil_and_paper_exercise_solutions:
 
 Solutions to 'pencil and paper' exercises provided in the tutorial paper. These are provided to aid the reader in developing intuitions for the equations used in active inference.
