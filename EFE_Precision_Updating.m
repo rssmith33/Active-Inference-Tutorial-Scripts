@@ -1,4 +1,4 @@
-%% Example code for simulated expected free energy precision (beta/gamma) updates
+%% Example code for simulating expected free energy precision (beta/gamma) updates
 % (associated with dopamine in the neural process theory)
 
 % Supplementary Code for: A Step-by-Step Tutorial on Active Inference Modelling and its 
