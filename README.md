@@ -24,6 +24,10 @@ Prediction_error_example:
 
 Separate script that allows the reader to calculate state and outcome prediction errors. These minimize variational and expected free energy, respectively. Minimizing state prediction errors maintains accurate beliefs (while also changing beliefs as little as possible). Minimizing outcome prediction errors maximizes reward and information gain.
 
+EFE_learning_novelty_term:
+
+Separate script that allows the reader to calculate the novelty term that is added to the expected free energy when learning the Dirichlet concentration parameters (a) for the likelihood matrix (A). Small concentration parameters lead to a larger value for the novelty term, which is subtracted from the total EFE value for a policy. Therefore, less confidence in beliefs about state-outcome mappings in the A matrix lead the agent to select policies that will increase confidence in those beliefs ('parameter exploration').
+
 Pencil_and_paper_exercise_solutions:
 
 Solutions to 'pencil and paper' exercises provided in the tutorial paper. These are provided to aid the reader in developing intuitions for the equations used in active inference.
