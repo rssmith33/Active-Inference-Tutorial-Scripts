@@ -44,11 +44,14 @@ for ni = 1:16 % number of variational updates (16)
 
     beta_update = (pi_posterior - pi_0)'*-G; % calculate update
 
-    dFdg = beta_posterior - beta_prior + beta_update; % calculate beta gradient 
-                                                      % with respect to F
+    dFd_gamma = beta_posterior - beta_prior + beta_update; % partial derivative of F 
+                                                           % with respect to gamma 
+                                                           % (recall gamma = 1/beta)
     
-    beta_posterior = beta_posterior - dFdg/2; % update posterior precision 
-                                              % estimate
+    beta_posterior = beta_posterior - dFd_gamma/2; % update posterior precision 
+                                                   % estimate (with step size of 2, which reduces 
+                                                   % the magnitude of each update and can promote 
+                                                   % stable convergence)
 
     gamma = 1/beta_posterior; % update expected free energy precision
 
