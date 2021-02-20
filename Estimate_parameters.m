@@ -188,7 +188,7 @@ for i = 1:numel(Y) % Get probability of true actions for each trial
     for j = 1:numel(Y{1}(:,2)) % Only get probability of the second (controllable) state factor
         
         L = L + log(MDP(i).P(:,Y{i}(2,j),j)+ eps); % sum the (log) probabilities of each action
-                                              % given a set of possible parameter values
+                                                   % given a set of possible parameter values
     end
 end 
 
