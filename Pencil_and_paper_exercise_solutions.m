@@ -9,12 +9,12 @@
 
 % Note to readers: be sure to run sections individually
 
+
+%% Static perception
+
 clear
 close all
 rng('default')
-
-
-%% Static perception
 
 % priors
 D = [.75 .25]';
@@ -27,10 +27,14 @@ A = [.8 .2;
 o = [1 0]';
 
 % express generative model in terms of update equations
-lns = nat_log(D) + nat_log(A')*o;
+lns = nat_log(D) + nat_log(A'*o);
 
 % normalize using a softmax function to find posterior
-s = (exp(lns)/sum(exp(lns)))
+s = (exp(lns)/sum(exp(lns)));
+
+disp('Posterior over states q(s):');
+disp(' ');
+disp(s);
 
 % Note: Because the natural log of 0 is undefined, for numerical reasons 
 % the nat_log function here replaces zero values with very small values. This
@@ -42,6 +46,8 @@ return
 %% Dynamic perception
 
 clear
+close all
+rng('default')
 
 % priors
 D = [.5 .5]';
@@ -51,14 +57,15 @@ A = [.9 .1;
      .1 .9];
  
 % transitions
-B = [1 0;
-     0 1];
+ B = [1 0;
+      0 1];
 
 % observations
 o{1,1} = [1 0]';
 o{1,2} = [0 0]';
 o{2,1} = [1 0]';
 o{2,2} = [1 0]';
+
 % number of timesteps
 T = 2;
 
@@ -74,25 +81,26 @@ for t = 1:T
             lnD = nat_log(D);% past
             lnBs = nat_log(B'*Qs(:,tau+1));% future
         elseif tau == T % last time point
-             lnD  = nat_log(B'*Qs(:,tau-1));% no contribution from future
-        else % 1 > tau > T
-             lnD  = nat_log(B*Q(:,tau-1));
-             lnBs = nat_log(B'*Q(:,tau+1));
+             lnBs  = nat_log(B'*Qs(:,tau-1));% no contribution from future
         end 
         % likelihood
         lnAo = nat_log(A'*o{t,tau});
         % update equation
         if tau == 1
-           lns = .5*lnD + .5*lnBs + lnAo;
+            lns = .5*lnD + .5*lnBs + lnAo;
         elseif tau == T
-            lns = .5*lnD + lnAo;
+            lns = .5*lnBs + lnAo;
         end 
         % normalize using a softmax function to find posterior
-        Qs(:,tau) = (exp(lns)/sum(exp(lns)));
+        Qs(:,tau) = (exp(lns)/sum(exp(lns)))
     end 
 end
 
 Qs % final posterior beliefs over states
+
+disp('Posterior over states q(s):');
+disp(' ');
+disp(Qs);
 
 %% functions
 
