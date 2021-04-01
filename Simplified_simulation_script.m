@@ -31,7 +31,7 @@ clear
 % below to 1. To do so for priors (d), likelihoods (a), and habits (e), 
 % set the 'Gen_model' variable to 2:
 
-Gen_model = 2; % as in the main tutorial code, many parameters can be adjusted
+Gen_model = 1; % as in the main tutorial code, many parameters can be adjusted
                % in the model setup, within the explore_exploit_model
                % function starting on line 810. This includes, among
                % others (similar to in the main tutorial script):
@@ -188,7 +188,7 @@ posterior_beta = 1;
 gamma(1) = 1/posterior_beta; % expected free energy precision
     
 % message passing variables
-TimeConst = 4; % time constant for gradient decent
+TimeConst = 4; % time constant for gradient descent
 NumIterations  = 16; % number of message passing iterations
 
 % Lets go! Message passing and policy selection 
@@ -273,17 +273,17 @@ for t = 1:T % loop over time points
                         lnBs = nat_log(B_norm(b{factor}(:,:,V(tau,policy,factor))')*state_posterior{factor}(:,tau+1,policy));% backward message
                     end
                     % here we both combine the messages and perform a gradient
-                    % decent on the posterior 
+                    % descent on the posterior 
                     v_depolarization = v_depolarization + (.5*lnD + .5*lnBs + lnAo(:,tau) - v_depolarization)/TimeConst;
                     % variational free energy at each time point
                     Ft(tau,Ni,t,factor) = state_posterior{factor}(:,tau,policy)'*(.5*lnD + .5*lnBs - lnAo(:,tau) - nat_log(state_posterior{factor}(:,tau,policy)));
                     % update posterior by running v through a softmax 
                     state_posterior{factor}(:,tau,policy) = (exp(v_depolarization)/sum(exp(v_depolarization)));    
                     % store state_posterior (normalised firing rate) from each epoch of
-                    % gradient decent for each tau
+                    % gradient descent for each tau
                     normalized_firing_rates{factor}(Ni,:,tau,t,policy) = state_posterior{factor}(:,tau,policy);                   
                     % store v (non-normalized log posterior or 'membrane potential') 
-                    % from each epoch of gradient decent for each tau
+                    % from each epoch of gradient descent for each tau
                     prediction_error{factor}(Ni,:,tau,t,policy) = v_depolarization;
                     clear v
                 end
@@ -399,7 +399,7 @@ for t = 1:T % loop over time points
     % [.4 .4 .2], and two possible actions, with policy 1 and 2 leading 
     % to action 1, and policy 3 leading to action 2, the probability of 
     % each action is [.8 .2]. This vector is then passed through a softmax function 
-    % controlled by the temperature parameter alpha which by default is extremely 
+    % controlled by the inverse temperature parameter alpha which by default is extremely 
     % large (alpha = 512), leading to deterministic selection of the action with 
     % the highest probability. 
     
