@@ -33,6 +33,7 @@ function [MDP] = spm_MDP_VB_X_tutorial(MDP,OPTIONS)
 % MDP.chi               - Occams window for deep updates
 % MDP.tau               - time constant for gradient descent [4]
 % MDP.eta               - learning rate for model parameters
+% MDP.omega             - forgetting rate for model parameters
 % MDP.zeta              - Occam's window for polcies [3]
 % MDP.erp               - resetting of initial states, to simulate ERPs [4]
 %
@@ -221,6 +222,7 @@ try, alpha = MDP(1).alpha; catch, alpha = 512;  end % action precision
 try, beta  = MDP(1).beta;  catch, beta  = 1;    end % policy precision
 try, zeta  = MDP(1).zeta;  catch, zeta  = 3;    end % Occam window policies
 try, eta   = MDP(1).eta;   catch, eta   = 1;    end % learning rate
+try, omega = MDP(1).omega; catch, omega = 1;    end % forgetting rate
 try, tau   = MDP(1).tau;   catch, tau   = 4;    end % update time constant
 try, chi   = MDP(1).chi;   catch, chi   = 1/64; end % Occam window updates
 try, erp   = MDP(1).erp;   catch, erp   = 4;    end % update reset
@@ -1121,7 +1123,7 @@ for m = 1:size(MDP,1)
                     da = spm_cross(da,X{m,f}(:,t));
                 end
                 da     = da.*(MDP(m).a{g} > 0);
-                MDP(m).a{g} = MDP(m).a{g} + da*eta;
+                MDP(m).a{g} = MDP(m).a{g}*omega + da*eta;
             end
         end
         
@@ -1133,7 +1135,7 @@ for m = 1:size(MDP,1)
                     v   = V{m}(t - 1,k,f);
                     db  = u{m}(k,t)*x{m,f}(:,t,k)*x{m,f}(:,t - 1,k)';
                     db  = db.*(MDP(m).b{f}(:,:,v) > 0);
-                    MDP(m).b{f}(:,:,v) = MDP(m).b{f}(:,:,v) + db*eta;
+                    MDP(m).b{f}(:,:,v) = MDP(m).b{f}(:,:,v)*omega + db*eta;
                 end
             end
         end
@@ -1145,10 +1147,10 @@ for m = 1:size(MDP,1)
                 dc = O{m}{g,t};
                 if size(MDP(m).c{g},2) > 1
                     dc = dc.*(MDP(m).c{g}(:,t) > 0);
-                    MDP(m).c{g}(:,t) = MDP(m).c{g}(:,t) + dc*eta;
+                    MDP(m).c{g}(:,t) = MDP(m).c{g}(:,t)*omega + dc*eta;
                 else
                     dc = dc.*(MDP(m).c{g}>0);
-                    MDP(m).c{g} = MDP(m).c{g} + dc*eta;
+                    MDP(m).c{g} = MDP(m).c{g}*omega + dc*eta;
                 end
             end
         end
@@ -1159,14 +1161,14 @@ for m = 1:size(MDP,1)
     if isfield(MDP,'d')
         for f = 1:Nf(m)
             i = MDP(m).d{f} > 0;
-            MDP(m).d{f}(i) = MDP(m).d{f}(i) + X{m,f}(i,1)*eta;
+            MDP(m).d{f}(i) = MDP(m).d{f}(i)*omega + X{m,f}(i,1)*eta;
         end
     end
     
     % policies
     %----------------------------------------------------------------------
     if isfield(MDP,'e')
-        MDP(m).e = MDP(m).e + eta*u{m}(:,T);
+        MDP(m).e = MDP(m).e*omega + eta*u{m}(:,T);
     end
     
     % (negative) free energy of parameters (complexity): outcome specific
