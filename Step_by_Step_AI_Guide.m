@@ -48,7 +48,7 @@ rs1 = 4; % Risk-seeking parameter (set to the variable rs below)
          % To reproduce fig. 10, use values of 3 or 4 (with Sim = 3)
          % This will have no effect on Sim = 4 or Sim = 5
 
-Sim = 4;
+Sim = 1;
 
 % When Sim = 5, if PEB = 1 the script will run simulated group-level
 % (Parametric Empirical Bayes) analyses.
