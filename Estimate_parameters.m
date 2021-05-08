@@ -95,7 +95,6 @@ M.mdp   = DCM.MDP;                       % MDP structure
 
 % Variational Laplace
 %--------------------------------------------------------------------------
-
 [Ep,Cp,F] = spm_nlsi_Newton(M,DCM.U,DCM.Y); % This is the actual fitting routine
 
 % Store posterior distributions and log evidence (free energy)
@@ -104,7 +103,6 @@ DCM.M   = M;  % Generative model
 DCM.Ep  = Ep; % Posterior parameter estimates
 DCM.Cp  = Cp; % Posterior variances and covariances
 DCM.F   = F;  % Free energy of model fit
-
 
 return
 
@@ -152,10 +150,8 @@ for i = 1:length(field)
     end
 end
 
-
 % place MDP in trial structure
 %--------------------------------------------------------------------------
-
 la = mdp.la_true;  % true level of loss aversion
 rs = mdp.rs_true;  % true preference magnitude for winning (higher = more risk-seeking)
 
