@@ -74,6 +74,9 @@ for i = 1:length(DCM.field)
         elseif strcmp(field,'eta')
             pE.(field) = log(0.5/(1-0.5)); % in logit-space - bounded between 0 and 1
             pC{i,i}    = prior_variance;
+        elseif strcmp(field,'omega')
+            pE.(field) = log(0.5/(1-0.5)); % in logit-space - bounded between 0 and 1
+            pC{i,i}    = prior_variance;
         else
             pE.(field) = 0;                % if it can take any negative or positive value
             pC{i,i}    = prior_variance;
@@ -141,6 +144,8 @@ for i = 1:length(field)
     elseif strcmp(field{i},'rs')
         mdp.(field{i}) = exp(P.(field{i}));
     elseif strcmp(field{i},'eta')
+        mdp.(field{i}) = 1/(1+exp(-P.(field{i})));
+    elseif strcmp(field{i},'omega')
         mdp.(field{i}) = 1/(1+exp(-P.(field{i})));
     else
         mdp.(field{i}) = exp(P.(field{i}));
