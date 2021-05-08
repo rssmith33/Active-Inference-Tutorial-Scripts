@@ -445,7 +445,7 @@ for t = 1:T
                 a_learning = spm_cross(a_learning,BMA_states{factor}(:,t));
             end
             a_learning = a_learning.*(MDP.a{modality} > 0);
-            MDP.a{modality} = MDP.a{modality} + a_learning*eta;
+            MDP.a{modality} = MDP.a{modality}*omega + a_learning*eta;
         end
     end 
 end 
@@ -454,13 +454,13 @@ end
 if isfield(MDP,'d')
     for factor = 1:NumFactors
         i = MDP.d{factor} > 0;
-        MDP.d{factor}(i) = MDP.d{factor}(i) + eta*BMA_states{factor}(i,1);
+        MDP.d{factor}(i) = omega*MDP.d{factor}(i) + eta*BMA_states{factor}(i,1);
     end
 end
 
 % policies e (habits)
 if isfield(MDP,'e')
-    MDP.e = MDP.e + eta*policy_posterior(:,T);
+    MDP.e = omega*MDP.e + eta*policy_posterior(:,T);
 end
 
 % Free energy of concentration parameters
