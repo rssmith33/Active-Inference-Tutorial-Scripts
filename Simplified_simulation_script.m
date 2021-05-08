@@ -69,6 +69,7 @@ V = MDP.V;         % Policies
 beta = MDP.beta;   % Expected free energy precision
 alpha = MDP.alpha; % Action precision
 eta = MDP.eta;     % Learning rate
+omega = MDP.omega; % Forgetting rate
 
 A = col_norm(A);
 B = col_norm(B);
@@ -1160,6 +1161,11 @@ E = [1 1 1 1 1]';
 % updates after each trial (if learning is enabled).
 
      eta = 1; % Default (maximum) learning rate
+     
+% Omega: forgetting rate (0-1) controlling the magnitude of reduction in concentration
+% parameter magnitudes after each trial (if learning is enabled).
+
+     omega = 1; % Default value indicating there is no forgetting (values < 1 indicate forgetting)
 
 % Beta: Expected precision of expected free energy (G) over policies (a 
 % positive value, with higher values indicating lower expected precision).
@@ -1198,6 +1204,7 @@ elseif Gen_model == 2
 end 
 
 mdp.eta = eta;                % learning rate
+mdp.omega = omega;            % forgetting rate
 mdp.alpha = alpha;            % action precision
 mdp.beta = beta;              % expected free energy precision
 
