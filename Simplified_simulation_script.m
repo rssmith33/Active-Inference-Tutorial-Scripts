@@ -1163,7 +1163,7 @@ E = [1 1 1 1 1]';
      eta = 1; % Default (maximum) learning rate
      
 % Omega: forgetting rate (0-1) controlling the magnitude of reduction in concentration
-% parameter magnitudes after each trial (if learning is enabled).
+% parameter values after each trial (if learning is enabled).
 
      omega = 1; % Default value indicating there is no forgetting (values < 1 indicate forgetting)
 
