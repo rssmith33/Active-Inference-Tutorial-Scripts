@@ -456,6 +456,18 @@ V(:,:,2) = [1 2 2 3 4;
     eta = 0.5; % By default we here set this to 0.5, but try changing its value  
                % to see how it affects model behavior
 
+% Omega: forgetting rate (0-1) controlling the reduction in concentration parameter
+% magnitudes after each trial (if learning is enabled). This controls the
+% degree to which newer experience can 'over-write' what has been learned
+% from older experiences. It is adaptive in environments where the true
+% parameters in the generative process (priors, likelihoods, etc.) can
+% change over time. A low value for omega can be seen as a prior that the
+% world is volatile and that contingencies change over time.
+
+    omega = 1; % By default we here set this to 1 (indicating no forgetting, 
+               % but try changing its value to see how it affects model behavior. 
+               % Values below 1 indicate greater rates of forgetting.
+               
 % Beta: Expected precision of expected free energy (G) over policies (a 
 % positive value, with higher values indicating lower expected precision).
 % Lower values increase the influence of habits (E) and otherwise make
@@ -568,6 +580,7 @@ mdp.D = D;                    % priors over initial states
 mdp.d = d;                    % enable learning priors over initial states
     
 mdp.eta = eta;                % learning rate
+mdp.omega = omega;            % forgetting rate
 mdp.alpha = alpha;            % action precision
 mdp.beta = beta;              % expected precision of expected free energy over policies
 mdp.erp = erp;                % degree of belief resetting at each timestep
@@ -608,6 +621,7 @@ mdp.label = label;
 clear beta
 clear alpha
 clear eta
+clear omega
 clear la
 clear rs % We clear these so we can re-specify them in later simulations
 
@@ -624,8 +638,8 @@ if Sim ==1
 % Now that the generative process and model have been generated, we can
 % simulate a single trial using the spm_MDP_VB_X script. Here, we provide 
 % a version specific to this tutorial - spm_MDP_VB_X_tutorial - that adds 
-% the learning rate (eta) for initial state priors (d) not included in the 
-% current version.
+% the learning rate (eta) for initial state priors (d), and adds forgetting rate (omega), 
+% which are not included in the current SPM version (as of 05/08/21).
 %--------------------------------------------------------------------------
 
 MDP = spm_MDP_VB_X_tutorial(mdp);
@@ -805,6 +819,9 @@ for i = 1:length(field)
     if strcmp(field{i},'eta')
         prior(i) = 1/(1+exp(-DCM.M.pE.(field{i})));
         posterior(i) = 1/(1+exp(-DCM.Ep.(field{i}))); 
+    elseif strcmp(field{i},'omega')
+        prior(i) = 1/(1+exp(-DCM.M.pE.(field{i})));
+        posterior(i) = 1/(1+exp(-DCM.Ep.(field{i})));
     else
         prior(i) = exp(DCM.M.pE.(field{i}));
         posterior(i) = exp(DCM.Ep.(field{i}));
@@ -924,7 +941,10 @@ field = fieldnames(DCM.M.pE);
 for i = 1:length(field)
     if strcmp(field{i},'eta')
         DCM.prior(i) = 1/(1+exp(-DCM.M.pE.(field{i})));
-        DCM.posterior(i) = 1/(1+exp(-DCM.Ep.(field{i}))); 
+        DCM.posterior(i) = 1/(1+exp(-DCM.Ep.(field{i})));
+    elseif strcmp(field{i},'omega')
+        DCM.prior(i) = 1/(1+exp(-DCM.M.pE.(field{i})));
+        DCM.posterior(i) = 1/(1+exp(-DCM.Ep.(field{i})));
     else
         DCM.prior(i) = exp(DCM.M.pE.(field{i}));
         DCM.posterior(i) = exp(DCM.Ep.(field{i}));
@@ -1057,7 +1077,10 @@ field = fieldnames(DCM.M.pE);
 for i = 1:length(field)
     if strcmp(field{i},'eta')
         DCM.prior(i) = 1/(1+exp(-DCM.M.pE.(field{i})));
-        DCM.posterior(i) = 1/(1+exp(-DCM.Ep.(field{i}))); 
+        DCM.posterior(i) = 1/(1+exp(-DCM.Ep.(field{i})));
+    elseif strcmp(field{i},'omega')
+        DCM.prior(i) = 1/(1+exp(-DCM.M.pE.(field{i})));
+        DCM.posterior(i) = 1/(1+exp(-DCM.Ep.(field{i})));
     else
         DCM.prior(i) = exp(DCM.M.pE.(field{i}));
         DCM.posterior(i) = exp(DCM.Ep.(field{i}));
