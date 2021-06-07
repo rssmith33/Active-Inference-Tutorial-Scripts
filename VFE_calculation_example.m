@@ -7,7 +7,17 @@
 
 clear all
 
-True_observation = [1 0]'; % Set observation
+True_observation = [1 0]'; % Set observation; Note that this could be set
+                           % to include more observations. For example, 
+                           % it could be set to [0 0 1]' to present a third
+                           % observation. Note that this would require
+                           % adding a corresponding third row to the
+                           % Likelihood matrix below to specify the
+                           % probabilities of the third observation under
+                           % each state. One could similarly add a third
+                           % state by adding a third entry into the Prior
+                           % and a corresponding third column into the
+                           % likelihood.
 
 %% Generative Model
 
@@ -19,23 +29,21 @@ Likelihood = [.8 .2;
               .2 .8]; % Likelihood distribution p(o|s): columns=states, 
                       % rows = observations
 
-Joint_probability = Prior.*Likelihood; % Joint probability distribution p(o,s)
-Predicted_observation_probabilities = Prior*Likelihood; % Predicted observation 
-                                                        % probabilities p(o)
+Likelihood_of_observation = True_observation'*Likelihood;                         
 
-True_observation_probability...
-    = Predicted_observation_probabilities*True_observation; % Probability of true observation
-True_observation_joint_probability...
-    = True_observation'*Joint_probability; % Joint probability of states and true observation
+Joint_probability = Prior.*Likelihood_of_observation; % Joint probability 
+                                                      % distribution p(o,s)
 
+Marginal_probability = sum(Joint_probability,2); % Marginal observation 
+                                                 % probabilities p(o)
 %% Bayes theorem: exact posterior
 
 % This is the distribution we want to approximate using variational 
 % inference. In many practical applications, we can not solve for this 
 % directly.
 
-Posterior = True_observation_joint_probability...
-    /True_observation_probability; % Posterior given true observation p(s|o)
+Posterior = Joint_probability...
+    /Marginal_probability; % Posterior given true observation p(s|o)
 
 disp(' ');
 disp('Exact Posterior:');
@@ -96,15 +104,15 @@ Initial_approximate_posterior = Prior; % Initial approximate posterior distribut
 
 % Calculate F
 Initial_F = Initial_approximate_posterior(1)*(log(Initial_approximate_posterior(1))...
-    -log(True_observation_joint_probability(1)))+Initial_approximate_posterior(2)...
-    *(log(Initial_approximate_posterior(2))-log(True_observation_joint_probability(2)));
+    -log(Joint_probabilities_for_true_observation(1)))+Initial_approximate_posterior(2)...
+    *(log(Initial_approximate_posterior(2))-log(Joint_probabilities_for_true_observation(2)));
 
 Optimized_approximate_posterior = Posterior; % Set approximate distribution to true posterior
 
 % Calculate F
 Minimized_F = Optimized_approximate_posterior(1)*(log(Optimized_approximate_posterior(1))...
-    -log(True_observation_joint_probability(1)))+Optimized_approximate_posterior(2)...
-    *(log(Optimized_approximate_posterior(2))-log(True_observation_joint_probability(2)));
+    -log(Joint_probabilities_for_true_observation(1)))+Optimized_approximate_posterior(2)...
+    *(log(Optimized_approximate_posterior(2))-log(Joint_probabilities_for_true_observation(2)));
 
 % We see that F is lower when the approximate posterior q(s) is closer to 
 % the true distribution p(s|o)
