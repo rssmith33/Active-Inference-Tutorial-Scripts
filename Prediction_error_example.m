@@ -76,9 +76,9 @@ o_1 = A*S1;    % Predicted outcomes under policy 1
 o_2 = A*S2;    % Predicted outcomes under policy 2
 z = exp(-16);  % Small number added to preference distribution to avoid log(0)
 
-risk_1 = o_1'*(log(o_1) - log(C+z)); % Risk under policy 1
+risk_1 = dot(o_1,log(o_1) - log(C+z)); % Risk under policy 1
 
-risk_2 = o_2'*(log(o_2) - log(C+z)); % Risk under policy 2 
+risk_2 = dot(o_2,log(o_2) - log(C+z)); % Risk under policy 2 
 
 disp(' ');
 disp('Risk Under Policy 1:');
@@ -98,9 +98,9 @@ s1 = [.9 .1]'; % States under policy 1
 s2 = [.1 .9]'; % States under policy 2
 
 
-ambiguity_1 = diag(A'*log(A))'*s1; % Ambiguity under policy 1
+ambiguity_1 = dot(diag(A'*log(A)),s1); % Ambiguity under policy 1
 
-ambiguity_2 = diag(A'*log(A))'*s2; % Ambiguity under policy 2
+ambiguity_2 = dot(diag(A'*log(A)),s2); % Ambiguity under policy 2
 
 disp(' ');
 disp('Ambiguity Under Policy 1:');
