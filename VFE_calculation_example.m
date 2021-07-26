@@ -104,15 +104,15 @@ Initial_approximate_posterior = Prior; % Initial approximate posterior distribut
 
 % Calculate F
 Initial_F = Initial_approximate_posterior(1)*(log(Initial_approximate_posterior(1))...
-    -log(Joint_probabilities_for_true_observation(1)))+Initial_approximate_posterior(2)...
-    *(log(Initial_approximate_posterior(2))-log(Joint_probabilities_for_true_observation(2)));
+    -log(Joint_probability(1)))+Initial_approximate_posterior(2)...
+    *(log(Initial_approximate_posterior(2))-log(Joint_probability(2)));
 
 Optimized_approximate_posterior = Posterior; % Set approximate distribution to true posterior
 
 % Calculate F
 Minimized_F = Optimized_approximate_posterior(1)*(log(Optimized_approximate_posterior(1))...
-    -log(Joint_probabilities_for_true_observation(1)))+Optimized_approximate_posterior(2)...
-    *(log(Optimized_approximate_posterior(2))-log(Joint_probabilities_for_true_observation(2)));
+    -log(Joint_probability(1)))+Optimized_approximate_posterior(2)...
+    *(log(Optimized_approximate_posterior(2))-log(Joint_probability(2)));
 
 % We see that F is lower when the approximate posterior q(s) is closer to 
 % the true distribution p(s|o)
