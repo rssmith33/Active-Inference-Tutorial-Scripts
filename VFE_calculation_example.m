@@ -23,18 +23,18 @@ True_observation = [1 0]'; % Set observation; Note that this could be set
 
 % Specify Prior and likelihood
 
-Prior = [.5 .5]; % Prior distribution p(s)
+Prior = [.5 .5]'; % Prior distribution p(s)
 
 Likelihood = [.8 .2;
               .2 .8]; % Likelihood distribution p(o|s): columns=states, 
                       % rows = observations
 
-Likelihood_of_observation = True_observation'*Likelihood;                         
+Likelihood_of_observation = Likelihood'*True_observation; 
 
 Joint_probability = Prior.*Likelihood_of_observation; % Joint probability 
                                                       % distribution p(o,s)
 
-Marginal_probability = sum(Joint_probability,2); % Marginal observation 
+Marginal_probability = sum(Joint_probability,1); % Marginal observation 
                                                  % probabilities p(o)
 %% Bayes theorem: exact posterior
 
