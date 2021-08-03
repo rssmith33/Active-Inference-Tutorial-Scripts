@@ -66,7 +66,6 @@ for ni = 1:16 % number of variational updates (16)
     policies_neural(:,n) = pi_posterior; % neural encoding of posterior over policies at 
                                          % each iteration of variational updating
 
-    pi_posterior = pi_posterior;         % record posterior over policies 
 
 end 
 
