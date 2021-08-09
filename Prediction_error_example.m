@@ -23,27 +23,33 @@ B_t2 = [.3 .3;
     
 o = [1 0]';          % Observation
 
-s_0 = [.5 .5]';      % Prior distribution over states
+s_pi_tau = [.5 .5]'; % Prior distribution over states. Note that we here
+                     % use the same value for s_pi_tau-1, s_pi_tau, and 
+                     % s_pi_tau+1. But this need not be the case.
+                     
+s_pi_tau_minus_1 = [.5 .5]';
 
-v_0 = [.5 .5]';      % Depolarization term (initial value)
+s_pi_tau_plus_1 = [.5 .5]';
 
-B_t2_cross = B_t2';  % Transpose B_t2
+v_0 = log([.5 .5]');      % Depolarization term (initial value)
 
-B_t2_cross = spm_softmax(B_t2_cross); % Normalize columns in transposed B_t2
+B_t2_cross_intermediate = B_t2';  % Transpose B_t2
+
+B_t2_cross = spm_softmax(B_t2_cross_intermediate); % Normalize columns in transposed B_t2
                                             
 %% Calculate state prediction error (single iteration)
 
-state_error = 1/2*(log(B_t1*s_0)+log(B_t2_cross*s_0))...
-              +log(A'*o)-log(s_0); % state prediction error
+state_error = 1/2*(log(B_t1*s_pi_tau_minus_1)+log(B_t2_cross*s_pi_tau_plus_1))...
+              +log(A'*o)-log(s_pi_tau); % state prediction error
 
-v = log(v_0) + state_error;      % Depolarization
+v = v_0 + state_error;      % Depolarization
 
 s = (exp(v)/sum(exp(v)));        % Updated distribution over states
 
 
 disp(' ');
 disp('Prior Distribution over States:');
-disp(s_0);
+disp(s_pi_tau);
 disp(' ');
 disp('State Prediction Error:');
 disp(state_error);
@@ -54,6 +60,7 @@ disp(' ');
 disp('Posterior Distribution over States:');
 disp(s);
 disp(' ');
+
 
 %% set up model to calculate outcome prediction errors 
 % This minimizes expected free energy (maximizes reward and
