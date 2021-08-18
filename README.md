@@ -2,7 +2,7 @@
 
 Supplementary scripts for Step-by-step active inference modelling tutorial
 
-By Ryan Smith and Chris Whyte
+By Ryan Smith and Christopher Whyte
 
 Step_by_Step_AI_Guide.m: 
 
