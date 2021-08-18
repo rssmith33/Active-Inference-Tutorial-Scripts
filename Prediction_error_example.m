@@ -114,7 +114,7 @@ disp('Ambiguity Under Policy 1:');
 disp(ambiguity_1);
 disp(' ');
 disp('Ambiguity Under Policy 2:');
-disp(ambiguity_1);
+disp(ambiguity_2);
 disp(' ');
 
 
