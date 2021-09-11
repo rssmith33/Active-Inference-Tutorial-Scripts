@@ -15,11 +15,11 @@ close all
 A = [.8 .4;       
      .2 .6];         % Likelihood
 
-B_t1 = [.8 .2; 
-        .2 .8];      % Transition prior from previous timestep
+B_t1 = [.9 .2; 
+        .1 .8];      % Transition prior from previous timestep
     
-B_t2 = [.3 .3; 
-        .7 .7];      % Transition prior from current timestep
+B_t2 = [.2 .3; 
+        .8 .7];      % Transition prior from current timestep
     
 o = [1 0]';          % Observation
 
@@ -31,7 +31,7 @@ s_pi_tau_minus_1 = [.5 .5]';
 
 s_pi_tau_plus_1 = [.5 .5]';
 
-v_0 = log([.5 .5]');      % Depolarization term (initial value)
+v_0 = log(s_pi_tau);      % Depolarization term (initial value)
 
 B_t2_cross_intermediate = B_t2';  % Transpose B_t2
 
@@ -61,7 +61,7 @@ disp('Posterior Distribution over States:');
 disp(s);
 disp(' ');
 
-
+return
 %% set up model to calculate outcome prediction errors 
 % This minimizes expected free energy (maximizes reward and
 % information-gain)
@@ -116,8 +116,3 @@ disp(' ');
 disp('Ambiguity Under Policy 2:');
 disp(ambiguity_2);
 disp(' ');
-
-
-
-
-
