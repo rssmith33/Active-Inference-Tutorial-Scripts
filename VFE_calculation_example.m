@@ -94,7 +94,7 @@ disp(' ');
 
 % We will use this decomposition for convenience when doing variational
 % inference below. Note how this decomposition is equivalent to the expression 
-% shown in Figure 2 - F=E_q(s)(ln(q(s)/p(o,s)) - because ln(x)-ln(y) = ln(x/y)
+% shown in Figure 3 - F=E_q(s)(ln(q(s)/p(o,s)) - because ln(x)-ln(y) = ln(x/y)
 % and p(o|s)p(s)=p(o,s)
 
 %% Variational inference
