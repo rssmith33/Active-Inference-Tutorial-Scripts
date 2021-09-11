@@ -1,4 +1,4 @@
-%% Example code for simulating expected free energy precision (beta/gamma) updates
+%% Example code for simulated expected free energy precision (beta/gamma) updates
 % (associated with dopamine in the neural process theory)
 
 % Supplementary Code for: A Step-by-Step Tutorial on Active Inference Modelling and its 
@@ -29,7 +29,7 @@ gamma_0 = 1;                 % Starting expected free energy precision value
 gamma = gamma_0;             % Initial expected free energy precision to be updated
 beta_prior = 1/gamma;        % Initial prior on expected free energy precision
 beta_posterior = beta_prior; % Initial posterior on expected free energy precision
- 
+psi = 2;                     % Step size parameter (promotes stable convergence) 
 
 for ni = 1:16 % number of variational updates (16)
 
@@ -42,14 +42,14 @@ for ni = 1:16 % number of variational updates (16)
                                                                              % over policies
     % calculate expected free energy precision 
 
-    beta_update = (pi_posterior - pi_0)'*-G; % calculate update
+    G_error = (pi_posterior - pi_0)'*-G; % expected free energy prediction error
 
-    dFd_gamma = beta_posterior - beta_prior + beta_update; % partial derivative of F 
-                                                           % with respect to gamma 
-                                                           % (recall gamma = 1/beta)
+    beta_update = beta_posterior - beta_prior + G_error; % change in beta:  
+                                                         % gradient of F with respect to gamma 
+                                                         % (recall gamma = 1/beta)
     
-    beta_posterior = beta_posterior - dFd_gamma/2; % update posterior precision 
-                                                   % estimate (with step size of 2, which reduces 
+    beta_posterior = beta_posterior - beta_update/psi; % update posterior precision 
+                                                   % estimate (with step size of psi = 2, which reduces 
                                                    % the magnitude of each update and can promote 
                                                    % stable convergence)
 
@@ -61,24 +61,22 @@ for ni = 1:16 % number of variational updates (16)
 
     gamma_dopamine(n,1) = gamma; % simulated neural encoding of precision
                                  % (beta_posterior^-1) at each iteration of 
-                                 % variational updating
+                                 % variational updating                                 
 
     policies_neural(:,n) = pi_posterior; % neural encoding of posterior over policies at 
                                          % each iteration of variational updating
-
-
 end 
 
 %% Show Results
 
 disp(' ');
-disp('Policy Prior:');
+disp('Final Policy Prior:');
 disp(pi_0);
 disp(' ');
-disp('Policy Posterior:');
+disp('Final Policy Posterior:');
 disp(pi_posterior);
 disp(' ');
-disp('Policy Difference Vector:');
+disp('Final Policy Difference Vector:');
 disp(pi_posterior-pi_0);
 disp(' ');
 disp('Negative Expected Free Energy:');
@@ -87,18 +85,30 @@ disp(' ');
 disp('Prior G Precision (Prior Gamma):');
 disp(gamma_0);
 disp(' ');
-disp('Posterior G Precision (Prior Gamma):');
+disp('Posterior G Precision (Gamma):');
 disp(gamma);
 disp(' ');
 
-plot(gamma_dopamine);
-title('Expected Free Energy Precision Updates (gamma)');
+gamma_dopamine_plot = [gamma_0;gamma_0;gamma_0;gamma_dopamine]; % Include prior value
+
+figure
+plot(gamma_dopamine_plot);
+ylim([min(gamma_dopamine_plot)-.05 max(gamma_dopamine_plot)+.05])
+title('Expected Free Energy Precision (Tonic Dopamine)');
 xlabel('Updates');
 ylabel('\gamma');
 
-% uncomment if you want to show firing rates encoding beliefs about each
+figure
+plot([gradient(gamma_dopamine_plot)],'r');
+ylim([min(gradient(gamma_dopamine_plot))-.01 max(gradient(gamma_dopamine_plot))+.01])
+title('Rate of Change in Precision (Phasic Dopamine)');
+xlabel('Updates');
+ylabel('\gamma gradient');
+
+% uncomment if you want to display/plot firing rates encoding beliefs about each
 % policy (columns = policies, rows = updates over time)
 
+% plot(policies_neural);
 % disp('Firing rates encoding beliefs over policies:');
 % disp(policies_neural');
 % disp(' ');
