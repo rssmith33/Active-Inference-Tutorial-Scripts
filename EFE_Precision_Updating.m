@@ -11,6 +11,8 @@
 clear all
 close all
 
+% This script will reproduce the simulation results in Figure 9
+
 % Here you can set the number of policies and the distributions that
 % contribute to prior and posterior policy precision
 
