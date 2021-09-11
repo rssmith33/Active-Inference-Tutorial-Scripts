@@ -20,32 +20,32 @@ rng('shuffle') % This sets the random number generator to produce a different
 
 % Simulation options after model building below:
 
-% If Sim = 1, simulate single trial. This will reproduce fig. 7. (Although
+% If Sim = 1, simulate single trial. This will reproduce fig. 8. (Although
             % note that, for this and the following simulations, results 
             % will vary each time due to random sampling)
 
 % If Sim = 2, simulate multiple trials where the left context is active 
-            % (D{1} = [1 0]'). This will reproduce fig. 9.
+            % (D{1} = [1 0]'). This will reproduce fig. 10.
              
 % If Sim = 3, simulate reversal learning, where the left context is active 
             % (D{1} = [1 0]') in early trials and then reverses in later 
-            % trials (D{1} = [0 1]'). This will reproduce fig. 10.
+            % trials (D{1} = [0 1]'). This will reproduce fig. 11.
             
 % If Sim = 4, run parameter estimation on simulated data with reversal
-            % learning. This will reproduce the top panel of fig. 15.
+            % learning. This will reproduce the top panel of fig. 17.
             
 % If Sim = 5, run parameter estimation on simulated data with reversal
             % learning from multiple participants under different models
             % (i.e., different parameter values) and perform model comparison. 
-            % This will reproduce the bottom panel of fig. 15. This option
+            % This will reproduce the bottom panel of fig. 17. This option
             % will also save two structures that include results of model
             % comparison, model fitting, parameter recoverability analyses,
             % and inputs needed for group (PEB) analyses.
             
 rs1 = 4; % Risk-seeking parameter (set to the variable rs below) 
-         % To reproduce fig. 7, use values of 4 or 8 (with Sim = 1)
-         % To reproduce fig. 9, use values of 3 or 4 (with Sim = 2)
-         % To reproduce fig. 10, use values of 3 or 4 (with Sim = 3)
+         % To reproduce fig. 8, use values of 4 or 8 (with Sim = 1)
+         % To reproduce fig. 10, use values of 3 or 4 (with Sim = 2)
+         % To reproduce fig. 11, use values of 3 or 4 (with Sim = 3)
          % This will have no effect on Sim = 4 or Sim = 5
 
 Sim = 1;
