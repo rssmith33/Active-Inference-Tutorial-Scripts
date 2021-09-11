@@ -9,7 +9,7 @@
 
 % Step by step tutorial for building hierarchical POMDPs using the active
 % inference framework. Here we simulate the now classic "Local Global" auditory
-% mismatch paradigm
+% mismatch paradigm. This will reproduce results similar to figs. 14-16.
 
 clear
 close all
@@ -220,6 +220,20 @@ mdp.erp = 1;                    % reset/decay paramater
 mdp.Aname = {'Stimulus', 'Report Feedback'};
 mdp.Bname = {'Sequence', 'Time in trial', 'Report'};
 
+
+% level one labels 
+label.factor{1}   = 'Stimulus';   label.name{1}    = {'High','Low'};
+label.modality{1} = 'Stimulus';   label.outcome{1} = {'High','Low'};
+mdp.MDP.label = label;
+
+label.factor{1}   = 'Sequence type';   label.name{1}    = {'High','Low','High-low','Low-high'};
+label.factor{2}   = 'Time in trial';    label.name{2}    = {'T1', 'T2', 'T3', 'T4', 'T5', 'T6'};
+label.factor{3}   = 'Report';    label.name{3}    = {'Null', 'Same', 'Different'};
+label.modality{1} = 'Tone';    label.outcome{1} = {'High', 'Low'};
+label.modality{2} = 'Feedback';  label.outcome{2} = {'Null','Incorrect','Correct'};
+label.action{3} = {'Null','Same','Different'};
+mdp.label = label;
+
 mdp = spm_MDP_check(mdp);
 MDP = spm_MDP_VB_X_tutorial(mdp);
 
@@ -322,7 +336,9 @@ hold on
 plot(time_low,sum(v2_10,2),'b','LineWidth',4) % local standard
 plot(time_low,sum(v1_10,2),'r','LineWidth',4) % local deviation
 axis(limits)
-set(gca,'FontSize',30)
+set(gca,'FontSize',10)
+title('Mismatch negativity')
+legend('Local standard', 'Local deviation')
 
 % high level plot
 limits = [1 45 -.5 .5];
@@ -332,7 +348,9 @@ hold on
 plot(time_high,sum(u1_10,2),'b','LineWidth',4) % Global standard
 plot(time_high,sum(u2_10,2),'r','LineWidth',4) % Global deviation
 axis(limits)
-set(gca,'FontSize',30)
+set(gca,'FontSize',10)
+title('P300')
+legend('Global standard', 'Global deviation')
 
 % MMN (standard - mismatch)
 limits = [20 45 -1.2 .5];
@@ -341,7 +359,8 @@ figure(12)
 hold on
 plot(time_low,sum(v2_10-v1_10,2),'k','LineWidth',4) 
 axis(limits)
-set(gca,'FontSize',30)
+set(gca,'FontSize',10)
+title('Mismatch negativity: local standard - local deviation')
 
 % P300 (standard - mismatch)
 limits = [1 45 -.5 .5];
@@ -350,5 +369,5 @@ figure(13)
 hold on
 plot(time_high,sum(u1_10-u2_10,2),'k','LineWidth',4) 
 axis(limits)
-set(gca,'FontSize',30)
-
+set(gca,'FontSize',10)
+title('P300: Global standard - Global deviation')
