@@ -370,9 +370,9 @@ for t = 1:T % loop over time points
         policy_posteriors(:,t) = exp(log(E) + gamma(t)*G(:,t) + F(:,t))/sum(exp(log(E) + gamma(t)*G(:,t) + F(:,t))); % posterior over policies
         
         % expected free energy precision (beta)
-        beta_update = (policy_posteriors(:,t) - policy_priors(:,t))'*G(:,t);
-        dFd_gamma = posterior_beta - beta + beta_update; % free energy gradient w.r.t gamma
-        posterior_beta = posterior_beta - dFd_gamma/2; 
+        G_error = (policy_posteriors(:,t) - policy_priors(:,t))'*G(:,t);
+        beta_update = posterior_beta - beta + G_error; % free energy gradient w.r.t gamma
+        posterior_beta = posterior_beta - beta_update/2; 
         gamma(t) = 1/posterior_beta;
         
         % simulate dopamine responses
