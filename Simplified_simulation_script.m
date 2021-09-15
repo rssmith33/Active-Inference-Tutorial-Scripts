@@ -277,7 +277,7 @@ for t = 1:T % loop over time points
                     % descent on the posterior 
                     v_depolarization = v_depolarization + (.5*lnD + .5*lnBs + lnAo(:,tau) - v_depolarization)/TimeConst;
                     % variational free energy at each time point
-                    Ft(tau,Ni,t,factor) = state_posterior{factor}(:,tau,policy)'*(.5*lnD + .5*lnBs - lnAo(:,tau) - nat_log(state_posterior{factor}(:,tau,policy)));
+                    Ft(tau,Ni,t,factor) = state_posterior{factor}(:,tau,policy)'*(.5*lnD + .5*lnBs + lnAo(:,tau) - nat_log(state_posterior{factor}(:,tau,policy)));
                     % update posterior by running v through a softmax 
                     state_posterior{factor}(:,tau,policy) = (exp(v_depolarization)/sum(exp(v_depolarization)));    
                     % store state_posterior (normalised firing rate) from each epoch of
