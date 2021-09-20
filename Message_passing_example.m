@@ -198,8 +198,8 @@ for t = 1:T
                 % future (Message 2)
                 lnBs = nat_log(B'*Qs(:,tau+1));
             elseif tau == T % last time point
-                % no contribution from future (Message 1)
-                lnBs  = nat_log(B'*Qs(:,tau-1));
+                % no contribution from future (only Message 1)
+                lnBs  = nat_log(B*Qs(:,tau-1));
             end 
             % likelihood (Message 3)
             lnAo = nat_log(A'*o{t,tau});
