@@ -88,7 +88,7 @@ for Ni = 1:NumIterations
     % For each edge (hidden state) (Step 7)
     for tau = 1:T
         % choose an edge (Step 3)
-        q = nat_log(Qs(:,t));
+        q = nat_log(Qs(:,tau));
         
         % compute messages sent by D and B (Steps 4) using the posterior
         % computed in Step 6B
@@ -96,7 +96,7 @@ for Ni = 1:NumIterations
             lnD = nat_log(D);                % Message 1
             lnBs = nat_log(B'*Qs(:,tau+1));  % Message 2
         elseif tau == T % last time point
-            lnBs = nat_log(B'*Qs(:,tau-1));  % Message 1
+            lnBs = nat_log(B*Qs(:,tau-1));  % Message 1
         end 
         
         % likelihood (Message 3)
