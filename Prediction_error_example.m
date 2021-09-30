@@ -105,9 +105,9 @@ s1 = [.9 .1]'; % States under policy 1
 s2 = [.1 .9]'; % States under policy 2
 
 
-ambiguity_1 = dot(diag(A'*log(A)),s1); % Ambiguity under policy 1
+ambiguity_1 = -dot(diag(A'*log(A)),s1); % Ambiguity under policy 1
 
-ambiguity_2 = dot(diag(A'*log(A)),s2); % Ambiguity under policy 2
+ambiguity_2 = -dot(diag(A'*log(A)),s2); % Ambiguity under policy 2
 
 disp(' ');
 disp('Ambiguity Under Policy 1:');
