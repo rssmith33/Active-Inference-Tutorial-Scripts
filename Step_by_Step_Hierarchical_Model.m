@@ -20,7 +20,7 @@ close all
 % prior beliefs about initial states
 %--------------------------------------------------------------------------
 
-D{1} = [1 1]';% stimulus tone {high, low, null}
+D{1} = [1 1]';% stimulus tone {high, low}
 
 d = D;
 
