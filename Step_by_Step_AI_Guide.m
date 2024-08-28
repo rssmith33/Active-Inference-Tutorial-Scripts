@@ -4,6 +4,7 @@
 % Application to Empirical Data
 
 % By: Ryan Smith, Karl J. Friston, Christopher J. Whyte
+% UPDATED: 8/28/2024 (modified forgetting rate implementation)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -48,7 +49,7 @@ rs1 = 4; % Risk-seeking parameter (set to the variable rs below)
          % To reproduce fig. 11, use values of 3 or 4 (with Sim = 3)
          % This will have no effect on Sim = 4 or Sim = 5
 
-Sim = 1;
+Sim = 2;
 
 % When Sim = 5, if PEB = 1 the script will run simulated group-level
 % (Parametric Empirical Bayes) analyses.
@@ -358,7 +359,7 @@ C{2}(:,:) =    [0  0   0   ;  % Null
             
 % Note that, expanded out, this means that the other C-matrices will be:
 
-% C{1} =      [0 0 0;     % No Hint
+% C{1} =      [0 0 0;    % No Hint
 %              0 0 0;    % Machine-Left Hint
 %              0 0 0];   % Machine-Right Hint
 % 
@@ -376,7 +377,18 @@ C{2}(:,:) =    [0  0   0   ;  % Null
 % This will not be simulated here. However, this works by increasing the
 % preference magnitude for an outcome each time that outcome is observed.
 % The assumption here is that preferences naturally increase for entering
-% situations that are more familiar.
+% situations that are more familiar. To do so, you can specify starting
+% concentration parameters. For example:
+
+% c{1}      = zeros(No(1),T); % Hints
+% c{2}      = zeros(No(2),T); % Wins/Losses
+% c{3}      = zeros(No(3),T); % Observed Behaviors
+% 
+% c{2}(:,:) =    [1  1  1  ;  % Null
+%                 1  0  0.5;  % Loss
+%                 1  2  1.5]; % win
+
+% NOTE: These values must be non-negative; higher values = more preferred
 
 % Allowable policies: U or V. 
 %==========================================================================
@@ -461,12 +473,17 @@ V(:,:,2) = [1 2 2 3 4;
 % degree to which newer experience can 'over-write' what has been learned
 % from older experiences. It is adaptive in environments where the true
 % parameters in the generative process (priors, likelihoods, etc.) can
-% change over time. A low value for omega can be seen as a prior that the
+% change over time. A high value for omega can be seen as a prior that the
 % world is volatile and that contingencies change over time.
 
-    omega = 1; % By default we here set this to 1 (indicating no forgetting, 
+  omega = 0.0; % By default we here set this to 0 (indicating no forgetting, 
                % but try changing its value to see how it affects model behavior. 
-               % Values below 1 indicate greater rates of forgetting.
+               % Values approaching 1 indicate greater rates of forgetting.
+               % NOTE: Trial 1 concentration parameter values are set as
+               % floor values (forgetting cannot reduce counts below those
+               % values - THIS IS MODIFIED FROM THE PUBLISHED TUTORIAL VERSION 
+               % SO THAT CONCENTRATION PARAMETERS ABOVE THE FLOOR VALUE 
+               % ARE MULTIPLIED BY 1-OMEGA)
                
 % Beta: Expected precision of expected free energy (G) over policies (a 
 % positive value, with higher values indicating lower expected precision).
@@ -577,8 +594,8 @@ mdp.B = B;                    % transition probabilities
 mdp.C = C;                    % preferred states
 mdp.D = D;                    % priors over initial states
 
-mdp.d = d;                    % enable learning priors over initial states
-    
+mdp.d = d; mdp.d_0 = mdp.d;   % enable learning priors over initial states
+                              %     and set lower bound on concentration paramaters (d_0)
 mdp.eta = eta;                % learning rate
 mdp.omega = omega;            % forgetting rate
 mdp.alpha = alpha;            % action precision
@@ -591,10 +608,10 @@ mdp.tau = tau;                % time constant for evidence accumulation
     % mdp.E = E;
 
 % or learning other parameters:
-    % mdp.a = a;                    
-    % mdp.b = b;
-    % mdp.c = c;
-    % mdp.e = e;         
+    % mdp.a = a;  mdp.a_0 = mdp.a;                  
+    % mdp.b = b;  mdp.b_0 = mdp.b;
+    % mdp.c = c;  mdp.c_0 = mdp.c; clear mdp.C = C;
+    % mdp.e = e;  mdp.e_0 = mdp.e;        
 
 % or specifying true states or outcomes:
 

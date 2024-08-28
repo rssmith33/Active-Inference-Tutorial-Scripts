@@ -1,4 +1,5 @@
 function [MDP] = spm_MDP_VB_X_tutorial(MDP,OPTIONS)
+% UPDATED: 8/28/2024 (modified forgetting rate implementation)
 
 % active inference and learning using variational message passing
 % FORMAT [MDP] = spm_MDP_VB_X_tutorial(MDP,OPTIONS)
@@ -149,7 +150,7 @@ try, OPTIONS.D;     catch, OPTIONS.D     = 0; end
 
 % check MDP specification
 %--------------------------------------------------------------------------
-MDP = spm_MDP_check(MDP);
+ MDP = spm_MDP_check(MDP);
 
 % handle multiple trials, ensuring parameters (and posteriors) are updated
 %==========================================================================
@@ -225,7 +226,7 @@ try, eta   = MDP(1).eta;   catch, eta   = 1;    end % learning rate
 try, omega = MDP(1).omega; catch, omega = 1;    end % forgetting rate
 try, tau   = MDP(1).tau;   catch, tau   = 4;    end % update time constant
 try, chi   = MDP(1).chi;   catch, chi   = 1/64; end % Occam window updates
-try, erp   = MDP(1).erp;   catch, erp   = 4;    end % update reset
+try, erp   = MDP(1).erp;   catch, erp   = 4;    end % update reset 
 
 % preclude precision updates for moving policies
 %--------------------------------------------------------------------------
@@ -258,8 +259,8 @@ for m = 1:size(MDP,1)
     end
     for g = 1:Ng(m)
         No(m,g) = size(MDP(m).A{g},1);     % number of outcomes
-    end
-    
+    end    
+
     % parameters of generative model and policies
     %======================================================================
     
@@ -306,7 +307,6 @@ for m = 1:size(MDP,1)
                 sB{m,f}(:,:,j) = spm_norm(MDP(m).B{f}(:,:,j) );
                 rB{m,f}(:,:,j) = spm_norm(MDP(m).B{f}(:,:,j)');
             end
-            
         end
         
         % prior concentration paramters for complexity
@@ -341,7 +341,7 @@ for m = 1:size(MDP,1)
     % priors over policies - concentration parameters
     %----------------------------------------------------------------------
     if isfield(MDP,'e')
-        E{m} = spm_norm(MDP(m).e);
+        E{m} = spm_norm(MDP(m).e); 
     elseif isfield(MDP,'E')
         E{m} = spm_norm(MDP(m).E);
     else
@@ -377,6 +377,7 @@ for m = 1:size(MDP,1)
             end
         end
         C{m,g} = spm_log(spm_softmax(C{m,g}));
+
     end
     
     % initialise  posterior expectations of hidden states
@@ -1123,7 +1124,7 @@ for m = 1:size(MDP,1)
                     da = spm_cross(da,X{m,f}(:,t));
                 end
                 da     = da.*(MDP(m).a{g} > 0);
-                MDP(m).a{g} = MDP(m).a{g}*omega + da*eta;
+                MDP(m).a{g} = (MDP(m).a{g}-MDP(m).a_0{g})*(1-omega) + MDP(m).a_0{g} + da*eta;
             end
         end
         
@@ -1135,7 +1136,7 @@ for m = 1:size(MDP,1)
                     v   = V{m}(t - 1,k,f);
                     db  = u{m}(k,t)*x{m,f}(:,t,k)*x{m,f}(:,t - 1,k)';
                     db  = db.*(MDP(m).b{f}(:,:,v) > 0);
-                    MDP(m).b{f}(:,:,v) = MDP(m).b{f}(:,:,v)*omega + db*eta;
+                    MDP(m).b{f}(:,:,v) = (MDP(m).b{f}(:,:,v)-MDP(m).b_0{f}(:,:,v))*(1-omega) + MDP(m).b_0{f}(:,:,v) + db*eta;
                 end
             end
         end
@@ -1147,10 +1148,10 @@ for m = 1:size(MDP,1)
                 dc = O{m}{g,t};
                 if size(MDP(m).c{g},2) > 1
                     dc = dc.*(MDP(m).c{g}(:,t) > 0);
-                    MDP(m).c{g}(:,t) = MDP(m).c{g}(:,t)*omega + dc*eta;
+                    MDP(m).c{g}(:,t) = (MDP(m).c{g}(:,t)-MDP(m).c_0{g}(:,t))*(1-omega) + MDP(m).c_0{g}(:,t) + dc*eta;
                 else
                     dc = dc.*(MDP(m).c{g}>0);
-                    MDP(m).c{g} = MDP(m).c{g}*omega + dc*eta;
+                    MDP(m).c{g} = (MDP(m).c{g}-c_0{g})*(1-omega) + c_0{g} + dc*eta;
                 end
             end
         end
@@ -1161,14 +1162,14 @@ for m = 1:size(MDP,1)
     if isfield(MDP,'d')
         for f = 1:Nf(m)
             i = MDP(m).d{f} > 0;
-            MDP(m).d{f}(i) = MDP(m).d{f}(i)*omega + X{m,f}(i,1)*eta;
+            MDP(m).d{f}(i) = (MDP(m).d{f}(i)-MDP(m).d_0{f}(i))*(1-omega) + MDP(m).d_0{f}(i) + X{m,f}(i,1)*eta;
         end
     end
     
     % policies
     %----------------------------------------------------------------------
     if isfield(MDP,'e')
-        MDP(m).e = MDP(m).e*omega + eta*u{m}(:,T);
+        MDP(m).e = (MDP(m).e-MDP(m).e_0)*(1-omega) + MDP(m).e_0 + eta*u{m}(:,T);
     end
     
     % (negative) free energy of parameters (complexity): outcome specific
@@ -1681,5 +1682,4 @@ elseif MDP.VOX == 2
         
 
 end
-
 

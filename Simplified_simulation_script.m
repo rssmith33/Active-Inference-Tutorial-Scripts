@@ -6,7 +6,7 @@
 % Application to Empirical Data
 
 % By: Ryan Smith, Karl J. Friston, Christopher J. Whyte
-
+% UPDATED: 8/28/2024 (modified forgetting rate implementation)
 rng('shuffle')
 close all
 clear
@@ -36,11 +36,11 @@ Gen_model = 1; % as in the main tutorial code, many parameters can be adjusted
                % function starting on line 810. This includes, among
                % others (similar to in the main tutorial script):
 
-% prior beliefs about context (d): alter line 866
+% prior beliefs about context (d): alter line 876
 
-% beliefs about hint accuracy in the likelihood (a): alter lines 986-988
+% beliefs about hint accuracy in the likelihood (a): alter lines 996-998
 
-% to adjust habits (e), alter line 1145
+% to adjust habits (e), alter line 1155
 
 %% Specify Generative Model
 
@@ -336,7 +336,7 @@ for t = 1:T % loop over time points
             for modality = 1:NumModalities
                 % prior preferences about outcomes
                 predictive_observations_posterior = cell_md_dot(a{modality},Expected_states(:)); %posterior over observations
-                Gintermediate(policy) = Gintermediate(policy) + predictive_observations_posterior'*(C{modality}(:,timestep));
+                Gintermediate(policy) = Gintermediate(policy) + predictive_observations_posterior'*(C{modality}(:,t));
 
                 % Bayesian surprise about parameters 
                 if isfield(MDP,'a')
@@ -445,7 +445,7 @@ for t = 1:T
                 a_learning = spm_cross(a_learning,BMA_states{factor}(:,t));
             end
             a_learning = a_learning.*(MDP.a{modality} > 0);
-            MDP.a{modality} = MDP.a{modality}*omega + a_learning*eta;
+            MDP.a{modality} = (MDP.a{modality}-MDP.a_0{modality})*(1-omega) + MDP.a_0{modality} + a_learning*eta;
         end
     end 
 end 
@@ -454,13 +454,13 @@ end
 if isfield(MDP,'d')
     for factor = 1:NumFactors
         i = MDP.d{factor} > 0;
-        MDP.d{factor}(i) = omega*MDP.d{factor}(i) + eta*BMA_states{factor}(i,1);
+        MDP.d{factor}(i) = (1-omega)*(MDP.d{factor}(i)-MDP.d_0{factor}(i)) + MDP.d_0{factor}(i) + eta*BMA_states{factor}(i,1);
     end
 end
 
 % policies e (habits)
 if isfield(MDP,'e')
-    MDP.e = omega*MDP.e + eta*policy_posterior(:,T);
+    MDP.e = (1-omega)*(MDP.e - MDP.e_0) + MDP.e_0 + eta*policy_posterior(:,T);
 end
 
 % Free energy of concentration parameters
@@ -1163,9 +1163,9 @@ E = [1 1 1 1 1]';
      eta = 1; % Default (maximum) learning rate
      
 % Omega: forgetting rate (0-1) controlling the magnitude of reduction in concentration
-% parameter values after each trial (if learning is enabled).
+% parameter values after each trial (if learning is enabled). NOTE THE FORM OF FORGETTING IMPLEMENTED HERE IS MODIFIED FROM THE DESCRIPTION IN THE PUBLISHED TUTORIAL FOR IMPROVED PERFORMANCE.
 
-     omega = 1; % Default value indicating there is no forgetting (values < 1 indicate forgetting)
+     omega = 0; % Default value indicating there is no forgetting (values approaching 1 indicate forgetting)
 
 % Beta: Expected precision of expected free energy (G) over policies (a 
 % positive value, with higher values indicating lower expected precision).
@@ -1194,13 +1194,13 @@ mdp.A = A;                    % state-outcome mapping
 mdp.B = B;                    % transition probabilities
 mdp.C = C;                    % preferred states
 mdp.D = D;                    % priors over initial states
-mdp.d = d;                    % enable learning priors over initial states
-
+mdp.d = d; mdp.d_0 = d;       % enable learning priors over initial states
+                              % d_0 is floor value for forgetting
 if Gen_model == 1
     mdp.E = E;                % prior over policies
 elseif Gen_model == 2
-    mdp.a = a;                % enable learning state-outcome mappings
-    mdp.e = e;                % enable learning of prior over policies
+    mdp.a = a; mdp.a_0 = a;   % enable learning state-outcome mappings and set floor value for forgetting (a_0)
+    mdp.e = e; mdp.e_0 = e;   % enable learning of prior over policies and set floor value for forgetting (e_0)
 end 
 
 mdp.eta = eta;                % learning rate
