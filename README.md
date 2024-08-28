@@ -6,7 +6,8 @@ By Ryan Smith and Christopher Whyte
 
 Step_by_Step_AI_Guide.m: 
 
-This is the main tutorial script. It illustrates how to build a partially observable Markov decision process (POMDP) model within the active inference framework, using  a simple explore-exploit task as an example. It shows how to run single-trial and multi-trial simulations including perception, decision-making, and learning. It also shows how to generate simulated neuronal responses. It further illustrates how to fit task models to empirical data for behavioral studies and do subsequent Bayesian group analyses.
+This is the main tutorial script. It illustrates how to build a partially observable Markov decision process (POMDP) model within the active inference framework, using  a simple explore-exploit task as an example. It shows how to run single-trial and multi-trial simulations including perception, decision-making, and learning. It also shows how to generate simulated neuronal responses. It further illustrates how to fit task models to empirical data for behavioral studies and do subsequent Bayesian group analyses. 
+NOTE: This code was updated on 8/28/24 to improve the way forgetting rates are implemented. Unlike in the original published tutorial, this updated version specifies that greater omega values promote greater forgetting. Initial values for concentration parameters also now act as a floor, preventing these parameters from evolving toward implausibly low values over time. 
 
 Step_by_Step_Hierarchical_Model:
 
@@ -39,13 +40,15 @@ Solutions to 'pencil and paper' exercises provided in the tutorial paper. These 
 spm_MDP_VB_X_tutorial:
 
 Tutorial version of the standard routine for running active inference (POMDP) models.
+NOTE: This code was updated on 8/28/24 to improve the way forgetting rates are implemented. Unlike in the original published tutorial, this updated version specifies that greater omega values promote greater forgetting. Initial values for concentration parameters also now act as a floor, preventing these parameters from evolving toward implausibly low values over time.
 
 Simplified_simulation_script:
 
 Simplified and heavily commented version of the spm_MDB_VB_X_tutorial script. This is provided to make it easier for the reader to understand how the standard simulation routines work.
+NOTE: This code was updated on 8/28/24 to improve the way forgetting rates are implemented. Unlike in the original published tutorial, this updated version specifies that greater omega values promote greater forgetting. Initial values for concentration parameters also now act as a floor, preventing these parameters from evolving toward implausibly low values over time.
 
 Estimate_parameters: 
 
 Script called by the main tutorial script for estimating parameters on (simulated) behavioral data.
 
-Note: Additional scripts are secondary functions called by the main scripts for plotting simulation outputs.
+NOTE: Additional scripts are secondary functions called by the main scripts for plotting simulation outputs.
