@@ -336,7 +336,7 @@ for t = 1:T % loop over time points
             for modality = 1:NumModalities
                 % prior preferences about outcomes
                 predictive_observations_posterior = cell_md_dot(a{modality},Expected_states(:)); %posterior over observations
-                Gintermediate(policy) = Gintermediate(policy) + predictive_observations_posterior'*(C{modality}(:,t));
+                Gintermediate(policy) = Gintermediate(policy) + predictive_observations_posterior'*(C{modality}(:,timestep));
 
                 % Bayesian surprise about parameters 
                 if isfield(MDP,'a')
